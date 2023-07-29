@@ -10,7 +10,7 @@ Assignment  -  Full Stack Engineer at Yellow
 
 # Steps to Run the Web Application:
 
-1. Save the app.py and index.html files in the same directory.
+1. Save the Yellow.py and Yellow_frontend.html files in the same directory.
 
 2. Make sure you have Python and Flask installed on your system. If you haven't installed Flask, open a terminal/command prompt and run the following command:
 pip install Flask
