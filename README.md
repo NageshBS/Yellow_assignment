@@ -20,4 +20,4 @@ python app.py
 
 4. The server will start running on localhost.
 
-5. Now, open a Yellow.html file in web browser.
+5. Now, open a Yellow_frontend.html file in web browser.
