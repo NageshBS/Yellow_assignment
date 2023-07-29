@@ -1,0 +1,124 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>yellow Assignment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+        #restaurants-list {
+            margin-top: 20px;
+        }
+        #past-locations {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #past-locations h3 {
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        #locations-list {
+            list-style: none;
+            padding: 0;
+        }
+        #locations-list li {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+        <div class="container">
+        <div id="map"></div>
+        <div id="restaurants-list">
+            <h2>1000 Closest Restaurants</h2>
+            <div id="restaurant-items"></div>
+        </div>
+        <div id="past-locations">
+            <h2>Past Locations</h2>
+            <div id="location-items"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 0, lng: 0 },
+                zoom: 14
+            });
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const userLocation = { lat: latitude, lng: longitude };
+                        map.setCenter(userLocation);
+
+                        
+                        fetch(`${'http://127.0.0.1:5000/'}/restaurants`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ latitude, longitude })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                displayRestaurants(data.restaurants);
+                                displayPastLocations(data.past_locations);
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    },
+                    (error) => {
+                        console.error('Error getting user location:', error);
+                    }
+                );
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        }
+
+        function displayRestaurants(restaurants) {
+            const restaurantsList = document.getElementById('restaurants-list');
+            restaurantsList.innerHTML = '';
+
+            restaurants.forEach(restaurant => {
+                const name = restaurant.name;
+                const address = restaurant.vicinity;
+
+                const restaurantItem = document.createElement('div');
+                restaurantItem.textContent = `${name} - ${address}`;
+                restaurantsList.appendChild(restaurantItem);
+            });
+        }
+
+        function displayPastLocations(pastLocations) {
+            const locationsList = document.getElementById('locations-list');
+            locationsList.innerHTML = '';
+
+            pastLocations.forEach(location => {
+                const latitude = location.latitude;
+                const longitude = location.longitude;
+
+                const locationItem = document.createElement('li');
+                locationItem.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                locationsList.appendChild(locationItem);
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4mBGQhGV_tiV13CXb1HbSnJaG5asgD4I&callback=initMap&libraries=places" async defer></script>
+</body>
+</html>
