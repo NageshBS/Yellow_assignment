@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000';
+        const API_URL = 'http://127.0.0.1:5000';
 
         function initMap() {
             const map = new google.maps.Map(document.getElementById('map'), {
@@ -58,6 +58,7 @@
                 zoom: 14
             });
 
+            // Get user's current location and render on the map
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -65,7 +66,7 @@
                         const userLocation = { lat: latitude, lng: longitude };
                         map.setCenter(userLocation);
 
-                        
+                        // Sending the user's location to the backend
                         fetch(`${'http://127.0.0.1:5000/'}/restaurants`, {
                             method: 'POST',
                             headers: {
